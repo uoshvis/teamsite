@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+#from teamapp.models import Team
 
 
 class UserManager(BaseUserManager):
@@ -42,6 +43,12 @@ class UserManager(BaseUserManager):
 
 
 class Member(AbstractBaseUser, PermissionsMixin):
+
+    # id = models.AutoField(primary_key=True)
+    team = models.ForeignKey('teamapp.Team', on_delete=models.SET_NULL,
+                             related_name='members',
+                             blank=True,
+                             null=True)
 
     firstname = models.CharField(max_length=100, blank=True, null=True)
     lastname = models.CharField(max_length=100, blank=True, null=True)

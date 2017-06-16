@@ -3,4 +3,5 @@
 *.pyc
 __pycache__
 *_initial.py
-
+teamsite.sublime-project
+teamsite.sublime-workspace
