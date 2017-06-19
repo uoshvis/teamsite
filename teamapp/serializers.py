@@ -25,10 +25,13 @@ class TeamSerializer(serializers.ModelSerializer):
     def validate_unique_email(self, validated_data, members_delete):
         instance_members = validated_data.get('members')
         delete_emails = [member_delete.email for member_delete in members_delete]
-        for instance_member in instance_members:
-            instance_email = instance_member.get('email', None)
+        instance_emails = [instance_member.get('email', None) for instance_member in instance_members]
+        is_unique = (len(set(instance_emails)) == len(instance_emails))
+        if not is_unique:
+            raise serializers.ValidationError('Your update data contais duplicate emails.')
+        for instance_email in instance_emails:
             if instance_email not in delete_emails and Member.objects.filter(email=instance_email).exists():
-                print("Email exists!")
+                raise serializers.ValidationError('Email must be unique')        
 
     def create(self, validated_data):
         if 'id' in validated_data:
@@ -52,8 +55,7 @@ class TeamSerializer(serializers.ModelSerializer):
         if instance_members:
             instance_ids = [instance_member.get('id', None) for instance_member in instance_members]
             members_delete = Member.objects.exclude(id__in=instance_ids).exclude(~Q(team_id=instance.id))
-            print('Members to delete: ', members_delete)
-
+            print('Members to delete ==>> ', members_delete)
             self.validate_unique_email(validated_data, members_delete)
 
 
