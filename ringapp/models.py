@@ -75,3 +75,4 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         # The user is identified by their username address
         return self.username
+

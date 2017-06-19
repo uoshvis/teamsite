@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from teamapp.serializers import TeamSerializer
-from teamapp.models import Team
+from teamapp.models import Team, Member
 
 # class MemberViewSet(viewsets.ModelViewSet):
 #     serializer_class = MemberSerializer
@@ -22,7 +22,7 @@ class TeamViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(None, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request):
         queryset = Team.objects.all()
