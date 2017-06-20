@@ -5,7 +5,7 @@ from ringapp.models import Member
 class Team(models.Model):
 
     # id = models.AutoField(primary_key=True)
-    team_name = models.CharField(max_length=100)
+    team_name = models.CharField(unique=True, max_length=100)
 
     # members = models.ForeignKey(Member, on_delete=models.SET_NULL,
     #                             blank=True, null=True)
