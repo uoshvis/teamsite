@@ -24,14 +24,29 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def validate_unique_email(self, validated_data, members_delete):
         instance_members = validated_data.get('members')
-        delete_emails = [member_delete.email for member_delete in members_delete]
-        instance_emails = [instance_member.get('email', None) for instance_member in instance_members]
+        delete_emails = [member_delete.email
+                         for member_delete in members_delete]
+        instance_emails = [instance_member.get('email', None)
+                           for instance_member in instance_members]
         is_unique = (len(set(instance_emails)) == len(instance_emails))
         if not is_unique:
-            raise serializers.ValidationError('Your update data contais duplicate emails.')
+            raise serializers.ValidationError('Your update data contains duplicate emails.')
         for instance_email in instance_emails:
             if instance_email not in delete_emails and Member.objects.filter(email=instance_email).exists():
-                raise serializers.ValidationError('Email must be unique')        
+                raise serializers.ValidationError('Email must be unique.')
+
+    def validate_unique_username(self, validated_data, members_delete):
+        instance_members = validated_data.get('members')
+        delete_usernames = [member_delete.username
+                            for member_delete in members_delete]
+        instance_usernames = [instance_member.get('username', None)
+                              for instance_member in instance_members]
+        is_unique = (len(set(instance_usernames)) == len(instance_usernames))
+        if not is_unique:
+            raise serializers.ValidationError('Your update data contains duplicate usernames.')
+        for instance_username in instance_usernames:
+            if instance_username not in delete_usernames and Member.objects.filter(username=instance_username).exists():
+                raise serializers.ValidationError('Username must be unique.')
 
     def create(self, validated_data):
         if 'id' in validated_data:
@@ -57,21 +72,12 @@ class TeamSerializer(serializers.ModelSerializer):
             members_delete = Member.objects.exclude(id__in=instance_ids).exclude(~Q(team_id=instance.id))
             print('Members to delete ==>> ', members_delete)
             self.validate_unique_email(validated_data, members_delete)
-
-
-
-            # susirenki trinamus
-            # unique validation goes here
-                # ar rastas yra trinamuose
-                # jei yra nieko nedaro
-                # jei yra trinamuose trini
-                # po validacijos trinu
+            self.validate_unique_username(validated_data, members_delete)
             members_delete.delete()
-            
+
             for instance_member in instance_members:
                 instance_id = instance_member.get('id', None)
 
-                # validate_unique_email(self, )
                 if instance_id in object_ids:
                     object_member = object_members.get(id=instance_id)
                     object_member.firstname = instance_member.get('firstname', object_member.firstname)
