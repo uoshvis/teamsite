@@ -3,12 +3,13 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 
-from teamapp.serializers import TeamSerializer
+from teamapp.serializers import TeamSerializer, MemberSerializer
 from teamapp.models import Team, Member
 
-# class MemberViewSet(viewsets.ModelViewSet):
-#     serializer_class = MemberSerializer
-#     queryset = Member.objects.all()
+
+class MemberViewSet(viewsets.ModelViewSet):
+    serializer_class = MemberSerializer
+    queryset = Member.objects.all()
 
 
 class TeamViewSet(viewsets.ModelViewSet):
@@ -32,7 +33,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         queryset = get_object_or_404(Team, pk=pk)
-        serializer = TeamSerializer(queryset, data=request.data, context={'request':request})
+        serializer = TeamSerializer(queryset, data=request.data)    # context={'request':request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
