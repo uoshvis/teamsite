@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import BaseUserManager
-from django.contrib.auth.models import PermissionsMixin
-#from teamapp.models import Team
+from django.contrib.auth.models import (AbstractBaseUser,
+                                        BaseUserManager,
+                                        PermissionsMixin,
+                                        )
 
 
 class UserManager(BaseUserManager):
@@ -75,4 +75,3 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         # The user is identified by their username address
         return self.username
-

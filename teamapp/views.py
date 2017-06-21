@@ -43,9 +43,3 @@ class TeamViewSet(viewsets.ModelViewSet):
         queryset = get_object_or_404(Team, pk=pk)
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    # def retrieve(self, request, pk=None):
-    #     queryset = get_object_or_404(Team, pk=pk)
-    #     serializer = TeamSerializer(queryset)
-    #     data = serializer.data
-    #     return Response(data)
